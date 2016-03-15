@@ -47,10 +47,19 @@ author   = """
 
 """
 exemplos = """
-Exemplos:
-./pysine --cidades Crato/CE -e Estagiario -v
+Exemplos
+
+[+] Modo Interativo
+./pysine 
+
+[+] Mostrando o resultado do emprego Estagiario na Cidade Crato/PE
+python3 pysine -e Estagiario --cidades Crato/CE -v
+
+[+] Salvando o resultado dos empregos da cidade Juazeiro do norte no arquivo vendedor.txt 
 ./pysine -c juazeiro-do-norte/ce --empregos Vendedor,vendedor-externo --salvar vendedor.txt
-./pysine -c FORTALEZA/CE,recife/pe -e web-programador,desenvolvedor,analista-desenvolvimento-de-sistemas -s ~/empregos/programador.txt"""
+
+[+] Criando e Salvando resultado dos empregos nas Cidades Fortaleza/CE e Recife/pe no arquivo programador.txt dentro da pasta empregos 
+python3 pysine -c FORTALEZA/CE,recife/pe -e web-programador,desenvolvedor,analista-desenvolvimento-de-sistemas -s ~/empregos/programador.txt"""
 errorAcento ="""
 [-]Erro no argumento
 [-]-------------------------------------------------------
@@ -130,13 +139,16 @@ def mainInterativo():
 	while True:
 		try:
 		
-			Cidades  = str(input("Exemplo: Crato/CE,Juazeiro-do-Norte/CE\nDigite os nomes das Cidades: ") or (print("\nNão pode deixar nenhum campo vazio\nTente novamente!\n"),time.sleep(3))).lower().replace(" ","-").split(",")
-			Empregos = str(input("Exemplo: Desenvolvedor,Estagiario\nDigite os nomes dos Empregos: ") or (print("\nNão pode deixar nenhum campo vazio\nTente novamente!\n"),time.sleep(3))).lower().replace(" ","-").split(",")
+			Cidades  = str(input("Exemplos: Crato/CE,Juazeiro-do-Norte/CE\nDigite os nomes das Cidades: ") or (print("\nNão pode deixar nenhum campo vazio\nTente novamente!\n"),time.sleep(3))).lower().replace(" ","-").split(",")
+			Empregos = str(input("Exemplos: Desenvolvedor,Estagiario\nDigite os nomes dos Empregos: ") or (print("\nNão pode deixar nenhum campo vazio\nTente novamente!\n"),time.sleep(3))).lower().replace(" ","-").split(",")
 			Salvar   = str(input("Deseja Salvar? S/n ").lower())
 			Verbose  = False
 			
 			if Salvar == "s" or Salvar == "sim":
-				Salvar = str(input("exemplos: ~/empregos/programador.txt ou estagiario.txt\nDeseja Salvar aonde? ") or "sine.txt")
+				Salvar = str(input("exemplos: ~/empregos/programador.txt ou estagiario.txt\nDeseja Salvar aonde? ") or "sineEmpregos.txt")
+				arq = open(Salvar,"w+")
+				arq.writelines(author) 
+				arq.close()
 			
 			elif Salvar == "n" or Salvar == "nao" or Salvar == "não":
 				Salvar = " "
@@ -144,14 +156,15 @@ def mainInterativo():
 			else:
 				print("\nTente novamente\n")
 				mainInterativo()
+			
 			if not Cidades == "" and not Empregos == "":
 				for cidade in Cidades:
 					cidade,estado = cidade.split("/")[0],cidade.split("/")[1]
 					for emprego in Empregos:
 						procurar(cidade,estado,emprego,Salvar,Verbose)
 		
-			parar = str(input("Deseja Continuar? S/n").lower())
-			if parar == "n" or parar == "nao" or parar == "não":
+			parar = str(input("Deseja Continuar? S/n ").lower())
+			if parar == "s" or parar == "sim":
 				pass
 			else:
 				print("\nSaindo!\n")
@@ -171,10 +184,11 @@ def main():
 	
 	
 	try:
-		Cidades  = list(args.cidades.lower().split(","))
-		Empregos = list(args.empregos.lower().split(","))
-		Salvar   = args.salvar.lower()
-		Verbose  = args.verbose
+		Cidades    = list(args.cidades.lower().split(","))
+		Empregos   = list(args.empregos.lower().split(","))
+		Salvar     = args.salvar.lower()
+		Verbose    = args.verbose
+		
 		if not Salvar == " ":
 			arq = open(Salvar,"w+")
 			arq.writelines(author) 
@@ -185,9 +199,14 @@ def main():
 				cidade,estado = cidade.split("/")[0],cidade.split("/")[1]
 				for emprego in Empregos:
 					procurar(cidade,estado,emprego,Salvar,Verbose)
+	
 	except AttributeError:
+		parser.print_help()
+		print(exemplos)
+		time.sleep(3)
+		print("\n\nEntrando no modo Interativo\n")
+		time.sleep(2)
 		mainInterativo()
-
 	except UnicodeEncodeError:
 		print(errorAcento)
 		time.sleep(5)
@@ -197,7 +216,7 @@ def main():
 		time.sleep(5)
 		parser.print_help()
 	except KeyboardInterrupt:
-		print("Cancelado com sucesso")
+		print("\nCancelado com sucesso\n")
 		time.sleep(3)
 		parser.print_help()
 	
