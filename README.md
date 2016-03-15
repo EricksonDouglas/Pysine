@@ -21,7 +21,7 @@ git clone https://github.com/EricksonDouglas/Pysine.git
 Passo 3:
 
 
-Entre na pasta Pysine e instale a dependecia com o pip
+Entre na pasta Pysine e instale a dependência com o pip
 
 ```
 cd Pysine
