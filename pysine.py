@@ -163,7 +163,7 @@ def mainInterativo():
 					for emprego in Empregos:
 						procurar(cidade,estado,emprego,Salvar,Verbose)
 		
-			parar = str(input("Deseja Continuar? S/n ").lower())
+			parar = str(input("Deseja fazer outra pesquisa? S/n ").lower())
 			if parar == "s" or parar == "sim":
 				pass
 			else:
@@ -188,6 +188,7 @@ def main():
 		Empregos   = list(args.empregos.lower().split(","))
 		Salvar     = args.salvar.lower()
 		Verbose    = args.verbose
+		
 		
 		if not Salvar == " ":
 			arq = open(Salvar,"w+")
