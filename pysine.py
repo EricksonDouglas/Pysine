@@ -69,7 +69,9 @@ resultado="""
 {Cidadedt}  : {Cidadedd}
 {Descricdt} : {Descricdd}
 
-Link : {url}"""
+Link : {url}
+"""
+
 
 #pegando as informação de cada link
 ######################################################################
@@ -98,14 +100,19 @@ def mostraremprego(complemento_link,salvar):
 
 #buscando as vargas disponivel
 ##################################################################################
-def procurar(cidade,estado,emprego,salvar):
+def procurar(cidade,estado,emprego,salvar,Verbose):
 	link ="http://www.sine.com.br/vagas-empregos-em-"+cidade+"-"+estado+"/"+emprego
 	try:
 		soup = BeautifulSoup(urlopen(link),"html.parser")
+		if Verbose:
+			print(link)
 		
 	except:
 		time.sleep(3)
 		soup = BeautifulSoup(urlopen(link),"html.parser")
+		if Verbose:
+			print("Tentando conectar novamente!")
+			print(link)
 	links = soup.find("div",{"class":"row jobs"}).find_all("a")
 	if len(links) != 0:
 		for row in links:
@@ -116,7 +123,43 @@ def procurar(cidade,estado,emprego,salvar):
 			print("[-]Emprego não encontrado: ")
 			print("[-]-----------------------")
 			print(link)
-	
+
+#Menu interativo
+########################################################################
+def mainInterativo():
+	while True:
+		try:
+		
+			Cidades  = str(input("Exemplo: Crato/CE,Juazeiro-do-Norte/CE\nDigite os nomes das Cidades: ") or (print("\nNão pode deixar nenhum campo vazio\nTente novamente!\n"),time.sleep(3))).lower().replace(" ","-").split(",")
+			Empregos = str(input("Exemplo: Desenvolvedor,Estagiario\nDigite os nomes dos Empregos: ") or (print("\nNão pode deixar nenhum campo vazio\nTente novamente!\n"),time.sleep(3))).lower().replace(" ","-").split(",")
+			Salvar   = str(input("Deseja Salvar? S/n ").lower())
+			Verbose  = False
+			
+			if Salvar == "s" or Salvar == "sim":
+				Salvar = str(input("exemplos: ~/empregos/programador.txt ou estagiario.txt\nDeseja Salvar aonde? ") or "sine.txt")
+			
+			elif Salvar == "n" or Salvar == "nao" or Salvar == "não":
+				Salvar = " "
+				Verbose = True
+			else:
+				print("\nTente novamente\n")
+				mainInterativo()
+			if not Cidades == "" and not Empregos == "":
+				for cidade in Cidades:
+					cidade,estado = cidade.split("/")[0],cidade.split("/")[1]
+					for emprego in Empregos:
+						procurar(cidade,estado,emprego,Salvar,Verbose)
+		
+			parar = str(input("Deseja Continuar? S/n").lower())
+			if parar == "n" or parar == "nao" or parar == "não":
+				pass
+			else:
+				print("\nSaindo!\n")
+				time.sleep(2)
+				break
+		except KeyboardInterrupt:
+			print("\nCancelado com Sucesso\n")
+			break
 #######################################################################
 def main():
 	parser = argparse.ArgumentParser(prog="./pysine",description=" Esse script foi feito para fazer busca de emprego do jeito rápido e eficaz")
@@ -141,11 +184,10 @@ def main():
 			for cidade in Cidades:
 				cidade,estado = cidade.split("/")[0],cidade.split("/")[1]
 				for emprego in Empregos:
-					procurar(cidade,estado,emprego,Salvar)
+					procurar(cidade,estado,emprego,Salvar,Verbose)
 	except AttributeError:
-		parser.print_help()
-		print(exemplos)
-		time.sleep(3)
+		mainInterativo()
+
 	except UnicodeEncodeError:
 		print(errorAcento)
 		time.sleep(5)
