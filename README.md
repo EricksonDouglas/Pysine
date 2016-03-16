@@ -1,12 +1,12 @@
 # pysine
-Ferramenta desenvolvida para auxiliar o pessoal a procurar empregos do jeito (Rápido|inteligente) no </br>[Sine](http://www.sine.com.br)
+Ferramenta desenvolvida para auxiliar o pessoal a procurar empregos do jeito (Rápido|inteligente|Automatizado) no [Sine](http://www.sine.com.br)
 
 ------------------------------------------------------------------------------------------------------
-# Instalação no Linux
+# Instalação pelo Linux
 Passo 1:
 
 
-instale o python 3.5 https://www.python.org/downloads/
+Você precisa ter instalado o [Git](https://git-scm.com/downloads), [Python 3](https://www.python.org/downloads/) e [Pip](https://pypi.python.org/pypi/pip#downloads) para prosseguir com os comandos abaixo.
 
 
 Passo 2:
@@ -30,7 +30,7 @@ pip install -r requisitos.txt
 
 Passo 4:
 
-Pronto! Você já pode desfrutar da aplicação
+Pronto! Você já pode desfrutar da ferramenta
 
 ```
 ./pysine
