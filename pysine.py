@@ -30,10 +30,9 @@ except ImportError:
 	print('''
 BeautifulSoup4 não instalado
 Faça a instalação do BeautifulSoup
-[+] Link Download
-BeautifulSoup: https://pypi.python.org/pypi/beautifulsoup4
-
-''')	
+[+] pip install -r requisitos.txt
+''')
+	exit(1)	
 
 
 #Adicionando mensagens na variavel
@@ -176,7 +175,16 @@ def mainInterativo():
 		except IndexError:
 			print("\nEsqueceu colocar o Estado, exemplos:Bodoco/pe, juazeiro-do-norte/CE\nTente novamente ")
 			time.sleep(3)
-			
+		except NameError:
+			print('''
+____________________________________
+BeautifulSoup4 não instalado
+Faça a instalação do BeautifulSoup
+[+] pip install -r requisitos.txt
+
+''')
+			time.sleep(3)
+			exit(1)
 #######################################################################
 def main():
 	parser = argparse.ArgumentParser(prog="./pysine",description=" Esse script foi feito para fazer busca de emprego do jeito rápido e eficaz")
