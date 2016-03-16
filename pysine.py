@@ -26,7 +26,7 @@ import time,argparse
 from urllib.request import urlopen
 try:
 	from bs4            import BeautifulSoup
-except:
+except ImportError:
 	print('''
 BeautifulSoup4 não instalado
 Faça a instalação do BeautifulSoup
