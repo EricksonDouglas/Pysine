@@ -173,6 +173,10 @@ def mainInterativo():
 		except KeyboardInterrupt:
 			print("\nCancelado com Sucesso\n")
 			break
+		except IndexError:
+			print("\nEsqueceu colocar o Estado, exemplos:Bodoco/pe, juazeiro-do-norte/CE\nTente novamente ")
+			time.sleep(3)
+			
 #######################################################################
 def main():
 	parser = argparse.ArgumentParser(prog="./pysine",description=" Esse script foi feito para fazer busca de emprego do jeito rápido e eficaz")
