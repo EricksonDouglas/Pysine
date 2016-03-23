@@ -98,6 +98,7 @@ def mostraremprego(complemento_link,salvar):
 	
 	if salvar == " ":
 		print(resultado.format(Empresadt=dt[0],Empresadd=dd[0],Salariodt=dt[1],Salariodd=dd[1],Cidadedt=dt[2],Cidadedd=dd[2],Descricdt=dt[3],Descricdd=dd[3],url=link))
+		time.sleep(3)
 	else:
 		arq  = open(salvar)
 		temp = arq.readlines()
@@ -138,9 +139,9 @@ def mainInterativo():
 	while True:
 		try:
 		
-			Cidades  = str(input("Exemplos: Crato/CE,Juazeiro-do-Norte/CE\nDigite os nomes das Cidades: ") or (print("\nNão pode deixar nenhum campo vazio\nTente novamente!\n"),time.sleep(3))).lower().replace(" ","-").split(",")
-			Empregos = str(input("Exemplos: Desenvolvedor,Estagiario\nDigite os nomes dos Empregos: ") or (print("\nNão pode deixar nenhum campo vazio\nTente novamente!\n"),time.sleep(3))).lower().replace(" ","-").split(",")
-			Salvar   = str(input("Deseja Salvar? S/n ").lower())
+			Cidades  = str(input("\nExemplos: Crato/CE,Juazeiro-do-Norte/CE\nDigite os nomes das Cidades: ") or (print("\nNão pode deixar nenhum campo vazio\nTente novamente!\n"),time.sleep(3))).lower().replace(" ","-").split(",")
+			Empregos = str(input("\nExemplos: Desenvolvedor,Estagiario\nDigite os nomes dos Empregos: ") or (print("\nNão pode deixar nenhum campo vazio\nTente novamente!\n"),time.sleep(3))).lower().replace(" ","-").split(",")
+			Salvar   = str(input("\nDeseja Salvar? S/n ").lower())
 			Verbose  = False
 			
 			if Salvar == "s" or Salvar == "sim":
@@ -214,10 +215,8 @@ def main():
 					procurar(cidade,estado,emprego,Salvar,Verbose)
 	
 	except AttributeError:
-		parser.print_help()
-		print(exemplos)
 		time.sleep(3)
-		print("\n\nEntrando no modo Interativo\n")
+		print("\n\nEntrando -> modo Interativo <-\n")
 		time.sleep(2)
 		mainInterativo()
 	except UnicodeEncodeError:
