@@ -70,19 +70,25 @@ Pronto! Você já pode rodar a aplicação
 ------------------------------------------------------------------------------------------------------
 # Exemplos
 
-usage: ./pysine [-h] [-c CIDADES] [-e EMPREGOS] [-s SALVAR] [-v]
+usage: ./pysine [-h] [-c CIDADES] [-e EMPREGOS] [-s SALVAR] [-i]
 
 
 [+] Modo Interativo
 
 ```
-./pysine
+./pysine -i
 ```
 
 [+] Mostrando o resultado do emprego Estagiario na Cidade Crato/PE
 
 ```
-python3 pysine -e Estagiario --cidades Crato/CE -v
+python3 pysine -e Estagiario --cidades Crato/CE 
+```
+
+[+] Mostrando os ultimos resultado da Cidade Crato/PE e das Cidades próximas
+
+```
+python3 pysine -c Crato/CE 
 ```
 
 [+] Salvando o resultado dos empregos da cidade Juazeiro do norte no arquivo vendedor.txt

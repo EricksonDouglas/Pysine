@@ -65,9 +65,12 @@ exemplos = Colorir.GREEN+"""
 Exemplos
 
 [+] Modo Interativo
-"""+Colorir.BRED+"""./pysine
+"""+Colorir.BRED+"""./pysine -i
 """+Colorir.GREEN+"""[+] Mostrando o resultado do emprego Estagiario na Cidade Crato/PE
-"""+Colorir.BRED+"""python3 pysine -e Estagiario --cidades Crato/CE -v
+"""+Colorir.BRED+"""python3 pysine -e Estagiario --cidades Crato/CE
+
+"""+Colorir.GREEN+"""[+] Mostrando os ultimos resultado da Cidade Crato/PE e das Cidades próximos 
+"""+Colorir.BRED+"""python3 pysine --cidades Crato/CE 
 
 """+Colorir.GREEN+"""[+] Salvando o resultado dos empregos da cidade Juazeiro do norte no arquivo vendedor.txt 
 """+Colorir.BRED+"""./pysine -c juazeiro-do-norte/ce --empregos Vendedor,vendedor-externo --salvar vendedor.txt
@@ -136,7 +139,6 @@ def procurar(cidade,estado,emprego,salvar):
 	link ="http://www.sine.com.br/vagas-empregos-em-"+cidade+"-"+estado+"/"+emprego
 	try:
 		soup = BeautifulSoup(urlopen(link),"html.parser")
-	
 		
 	except ConnectionResetError:
 		time.sleep(5)
@@ -208,9 +210,10 @@ Faça a instalação do BeautifulSoup
 #######################################################################
 def main():
 	parser = argparse.ArgumentParser(prog="./pysine",description=" Esse script foi feito para fazer busca de emprego do jeito rápido e eficaz")
-	parser.add_argument("-c","--cidades", type=str, help="Pode colocar mais de uma cidade separado por vírgula, Exemplo: -c Recife/PE,Fortaleza/CE  ")
-	parser.add_argument("-e","--empregos",type=str, help="Pode colocar mais de um emprego separado por vígula,  Exemplo: -s Estagiario,desenvolvedor")
-	parser.add_argument("-s","--salvar", default=" ", help="Para salvar os resultados")
+	parser.add_argument("-c","--cidades", default=" ", help="Pode colocar mais de uma cidade separado por vírgula, Exemplo: -c Recife/PE,Fortaleza/CE  ")
+	parser.add_argument("-e","--empregos",default=" ", help="Pode colocar mais de um emprego separado por vígula,  Exemplo: -s Estagiario,desenvolvedor")
+	parser.add_argument("-s","--salvar",  default=" ", help="Para salvar os resultados")
+	parser.add_argument("-i","--interativo", action="store_true",help="Entrar no Modo Interativo")
 	args = parser.parse_args()
 	
 	
@@ -218,35 +221,33 @@ def main():
 		Cidades    = list(args.cidades.lower().split(","))
 		Empregos   = list(args.empregos.lower().split(","))
 		Salvar     = args.salvar.lower()
+		Interativo = args.interativo
 		
-		
-		if not Salvar == " ":
-			arq = open(Salvar,"w+")
-			arq.writelines(author) 
-			arq.close()
+		if Interativo:
+			mainInterativo()
+		else:
+			if not Salvar == " ":
+				arq = open(Salvar,"w+")
+				arq.writelines(author) 
+				arq.close()
+				
+			if (not Cidades == " ") and (not Empregos == " "):
+				for cidade in Cidades:
+					cidade,estado = cidade.split("/")[0],cidade.split("/")[1]
+					for emprego in Empregos:
+						procurar(cidade,estado,emprego,Salvar)
 			
-		if not Cidades == "" and not Empregos == "":
-			for cidade in Cidades:
-				cidade,estado = cidade.split("/")[0],cidade.split("/")[1]
-				for emprego in Empregos:
-					procurar(cidade,estado,emprego,Salvar)
-	
-	except AttributeError:
-		print("\n\nEntrando -> modo Interativo <-\n")
-		time.sleep(2)
-		mainInterativo()
 	except UnicodeEncodeError:
 		print(errorAcento)
 		time.sleep(5)
 		parser.print_help()
 	except IndexError:
+		print("IndexError")
 		print(exemplos)
 		time.sleep(5)
-		print(Colorir.YELLOW+"\nEsqueceu colocar o Estado, exemplos:Bodoco/pe, juazeiro-do-norte/CE\nTente novamente "+Colorir.ENDC)
 	except KeyboardInterrupt:
 		print(Colorir.YELLOW+"\nCancelado com sucesso\n"+Colorir.ENDC)
 		time.sleep(3)
-		parser.print_help()
 	
 	
 if __name__ == "__main__":
