@@ -22,7 +22,7 @@
 #  
 #  
 
-import time,argparse
+import time,argparse,os
 from urllib.request import urlopen
 try:
 	from bs4            import BeautifulSoup
@@ -148,10 +148,10 @@ def mostraremprego(complemento_link,salvar):
 		print('\n')
 		time.sleep(3)
 	else:
-		arq  = open(salvar)
+		arq  = open("Vagas/"+salvar)
 		temp = arq.readlines()
 		temp.append(Mensagem.resultado.format(Empresadt=dt[0],Empresadd=dd[0],Salariodt=dt[1],Salariodd=dd[1],Cidadedt=dt[2],Cidadedd=dd[2],Descricdt=dt[3],Descricdd=dd[3],url=link))
-		arq = open(salvar,"w+")
+		arq = open("Vagas/"+salvar,"w+")
 		arq.writelines(temp)
 		arq.close()
 
@@ -223,12 +223,14 @@ def mainInterativo():
 		try:
 		
 			Cidades  = str(input(Colorir.RED+"\nExemplos:"+Colorir.GREEN+" Crato/CE,Juazeiro-do-Norte/CE\nDigite os nomes das Cidades: "+Colorir.ENDC) or (print(Colorir.YELLOW+"\nNão pode deixar esse campo vazio \nTente novamente!\n"+Colorir.ENDC),time.sleep(3))).lower().replace(" ","-").split(",")
-			Empregos = str(input(Colorir.RED+"\nExemplos: Desenvolvedor,Estagiario\n"+Colorir.GREEN+"Digite os nomes dos Empregos: "+Colorir.ENDC) or (print(Colorir.YELLOW+"\n Resultado de emprego vai ser aleatório\n"+Colorir.ENDC),time.sleep(3))).lower().replace(" ","-").split(",")
+			Empregos = str(input(Colorir.RED+"\nExemplos:"+Colorir.GREEN+" Desenvolvedor,Estagiario ou pode deixar vázio para mostrar as vagas recente\nDigite os nomes dos Empregos: "+Colorir.ENDC) or (print(Colorir.YELLOW+"\n Mostrar as Vagas Recentes\n"+Colorir.ENDC),time.sleep(3))).lower().replace(" ","-").split(",")
 			Salvar   = str(input(Colorir.GREEN+"\nDeseja Salvar? S/n "+Colorir.ENDC).lower())
 			
 			if Salvar == "s" or Salvar == "sim":
+				if "Vagas" not in os.listdir():
+					os.mkdir("Vagas")
 				Salvar = str(input(Colorir.RED+"exemplos: "+Colorir.GREEN+"programador.txt ou estagiario.txt\nDeseja Salvar aonde? "+Colorir.ENDC) or "sineEmpregos.txt")
-				arq = open(Salvar,"w+")
+				arq = open("Vagas/"+Salvar,"w+")
 				arq.writelines(Mensagem.author) 
 				arq.close()
 			
@@ -287,8 +289,10 @@ def main():
 			busca_area()
 		else:
 			if not Salvar == " ":
-				arq = open(Salvar,"w+")
-				arq.writelines(author) 
+				if "Vagas" not in os.listdir():
+					os.mkdir("Vagas")
+				arq = open("Vagas/"+Salvar,"w+")
+				arq.writelines(Mensagem.author) 
 				arq.close()
 				
 			if (not Cidades == " ") and (not Empregos == " "):
@@ -298,12 +302,12 @@ def main():
 						procurar(cidade,estado,emprego,Salvar)
 			
 	except UnicodeEncodeError:
-		print(errorAcento)
+		print(Mensagem.errorAcento)
 		time.sleep(5)
 		parser.print_help()
 	except IndexError:
 		print("IndexError")
-		print(exemplos)
+		print(Mensagem.exemplos)
 		time.sleep(5)
 	except KeyboardInterrupt:
 		print(Colorir.YELLOW+"\nCancelado com sucesso\n"+Colorir.ENDC)
