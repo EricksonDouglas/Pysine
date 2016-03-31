@@ -51,18 +51,18 @@ class Colorir:
 	UNDERLINE = '\033[4m'
 	ENDC = '\033[0m'
 
-#Adicionando mensagens na variavel
+#mensagens das variavel
 ######################################################################
-author   = """
+class Mensagem:
+	author   = """
 
-											  
-[+]	Author:   Erickson Douglas				  
+[+]	Author:   Erickson Douglas  
 [+]	Facebook: erickshow.mattos
 [+]	Twitter:  @erickshowplay 
 
 """
-exemplos = Colorir.GREEN+"""
-Exemplos
+	exemplos = Colorir.GREEN+"""
+	Exemplos
 
 [+] Modo Interativo
 """+Colorir.BRED+"""./pysine -i
@@ -77,17 +77,20 @@ Exemplos
 
 """+Colorir.GREEN+"""[+] Criando e Salvando resultado dos empregos nas Cidades Fortaleza/CE e Recife/pe no arquivo programador.txt dentro da pasta empregos 
 """+Colorir.BRED+"""python3 pysine -c FORTALEZA/CE,recife/pe -e web-programador,desenvolvedor,analista-desenvolvimento-de-sistemas -s ~/empregos/programador.txt"""+Colorir.ENDC
-errorAcento = Colorir.WARNING+"""
+	
+	errorAcento = Colorir.WARNING+"""
 [-]Erro no argumento
 [-]-------------------------------------------------------
 [-]não precisa colocar acento no nome da Cidade e/ou Emprego
 [-]Tente novamente!
 __________________________________________________________"""+Colorir.ENDC
-errorArgumento =Colorir.WARNING+"""
+
+	errorArgumento =Colorir.WARNING+"""
 [-]Esqueceu de algum argumento!
 [-]-----------------------------
 [-]Tente novamente"""+Colorir.ENDC
-resultado="""
+
+	resultado="""
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 {Empresadt} : {Empresadd}
@@ -97,7 +100,25 @@ resultado="""
 
 Link : {url}
 """
+	
+	errorBeautifulSoup = Colorir.YELLOW+'''
+____________________________________
+BeautifulSoup4 não instalado
+Faça a instalação do BeautifulSoup
+[+] pip install -r requisitos.txt
 
+'''+Colorir.ENDC
+
+	errorEstado = Colorir.YELLOW+"\nEsqueceu colocar o Estado, exemplos:Bodoco/pe, juazeiro-do-norte/CE\nTente novamente "+Colorir.ENDC
+	
+	Cancelado   = Colorir.YELLOW+"\nCancelado com Sucesso\n"+Colorir.ENDC
+	
+	Novamente   = Colorir.YELLOW+"\nTente novamente\n"+Colorir.ENDC
+	EmpregoNot  = Colorir.WARNING+"""
+[-]
+[-] Emprego não encontrado:
+[-]
+Link :"""+Colorir.GREEN+""" {url}"""
 
 #pegando as informação de cada link
 ######################################################################
@@ -109,6 +130,7 @@ def mostraremprego(complemento_link,salvar):
 	except ConnectionResetError:
 		time.sleep(5)
 		soup = BeautifulSoup(urlopen(link),"html.parser")
+		print("Tentando conectar novamente!")
 		
 	for row in soup.find("dl",{"class":"dl-horizontal"}).find_all("dt"):
 		dt.append(row.get_text().rstrip().strip())
@@ -117,18 +139,18 @@ def mostraremprego(complemento_link,salvar):
 		dd.append(row.get_text().rstrip().strip())
 	
 	if salvar == " ":
-		print(Colorir.YELLOW+">"*100+Colorir.ENDC+'\n')
+		print('\n')
 		print(Colorir.RED2+dt[0]+" : "+Colorir.GREEN+dd[0]+Colorir.ENDC)
 		print(Colorir.RED2+dt[1]+" : "+Colorir.GREEN+dd[1]+Colorir.ENDC)
 		print(Colorir.RED2+dt[2]+" : "+Colorir.GREEN+dd[2]+Colorir.ENDC)
 		print(Colorir.RED2+dt[3]+" : "+Colorir.GREEN+dd[3]+Colorir.ENDC+"\n")
 		print(Colorir.RED2+"link: "+Colorir.GREENUNDER+link+Colorir.ENDC)
-		print('\n'+Colorir.YELLOW+"<"*100+Colorir.ENDC)
+		print('\n')
 		time.sleep(3)
 	else:
 		arq  = open(salvar)
 		temp = arq.readlines()
-		temp.append(resultado.format(Empresadt=dt[0],Empresadd=dd[0],Salariodt=dt[1],Salariodd=dd[1],Cidadedt=dt[2],Cidadedd=dd[2],Descricdt=dt[3],Descricdd=dd[3],url=link))
+		temp.append(Mensagem.resultado.format(Empresadt=dt[0],Empresadd=dd[0],Salariodt=dt[1],Salariodd=dd[1],Cidadedt=dt[2],Cidadedd=dd[2],Descricdt=dt[3],Descricdd=dd[3],url=link))
 		arq = open(salvar,"w+")
 		arq.writelines(temp)
 		arq.close()
@@ -150,10 +172,49 @@ def procurar(cidade,estado,emprego,salvar):
 		for row in links:
 			mostraremprego(row.attrs["href"],salvar)
 	else:
-		print(Colorir.WARNING+"[-]"+">"*50)
-		print("[-] Emprego não encontrado: ")
-		print("[-]"+"<"*50+Colorir.ENDC)
-		print(Colorir.RED2+"Link: "+Colorir.GREEN+link+Colorir.ENDC)
+		print(Mensagem.EmpregoNot.format(url=link))
+
+#Menu Lista
+###################################################################################
+def busca_emprego(Emprego):
+	url  = "http://www.sine.com.br"+Emprego
+	soup = BeautifulSoup(urlopen(url),"html.parser")
+	links= soup.find("div",{"class":"row jobs"}).find_all("a")
+	if not len(links) == 0:
+		for row in links:
+			mostraremprego(row.attrs["href"],salvar=" ")		
+
+def busca_funcao(complemento_link):
+	url   = "http://www.sine.com.br"+complemento_link
+	soup  = BeautifulSoup(urlopen(url),"html.parser")
+	links = soup.find("div",{"id":"ctl00_cphConteudo_pnlFuncao"}).find_all("a")
+	lista_vagas = dict()
+	for link in links:
+		print(Colorir.GREEN+link.get_text()+" | Digite: "+Colorir.RED2+link.attrs["href"].split("/")[-1]+Colorir.ENDC)
+		lista_vagas[link.attrs["href"].split("/")[-1]] = link.attrs["href"]
+	
+	escolha =str(input(Colorir.RED2+"\nQual você deseja escolher? "+Colorir.GREEN)).lower()
+	if escolha in lista_vagas:
+		busca_emprego(lista_vagas[escolha])
+	else:
+		print("Tente Novamente")
+	
+def busca_area():
+	url ="http://www.sine.com.br/busca-de-vagas-area"
+	soup  = BeautifulSoup(urlopen(url),"html.parser")
+	links = soup.find("div",{"id":"ctl00_cphConteudo_pnlArea"}).find_all("a")
+	lista_area = dict()
+	 
+	for link in links:
+		print(Colorir.GREEN+link.get_text()+" | Digite: "+Colorir.RED2+link.attrs["href"].split("/")[-1]+Colorir.ENDC)
+		lista_area[link.attrs["href"].split("/")[-1]] = link.attrs["href"]
+		
+	escolha =str(input(Colorir.RED2+"\nQual você deseja escolher? "+Colorir.GREEN)).lower()
+	if escolha in lista_area:
+		busca_funcao(lista_area[escolha])
+	else:
+		print("Tente Novamente")
+
 
 #Menu interativo
 ########################################################################
@@ -161,21 +222,21 @@ def mainInterativo():
 	while True:
 		try:
 		
-			Cidades  = str(input(Colorir.RED+"\nExemplos:"+Colorir.GREEN+" Crato/CE,Juazeiro-do-Norte/CE\nDigite os nomes das Cidades: "+Colorir.ENDC) or (print(Colorir.YELLOW+"\nNão pode deixar nenhum campo vazio\nTente novamente!\n"+Colorir.ENDC),time.sleep(3))).lower().replace(" ","-").split(",")
-			Empregos = str(input(Colorir.RED+"\nExemplos: Desenvolvedor,Estagiario\n"+Colorir.GREEN+"Digite os nomes dos Empregos: "+Colorir.ENDC) or (print(Colorir.YELLOW+"\nNão pode deixar nenhum campo vazio\nTente novamente!\n"+Colorir.ENDC),time.sleep(3))).lower().replace(" ","-").split(",")
+			Cidades  = str(input(Colorir.RED+"\nExemplos:"+Colorir.GREEN+" Crato/CE,Juazeiro-do-Norte/CE\nDigite os nomes das Cidades: "+Colorir.ENDC) or (print(Colorir.YELLOW+"\nNão pode deixar esse campo vazio \nTente novamente!\n"+Colorir.ENDC),time.sleep(3))).lower().replace(" ","-").split(",")
+			Empregos = str(input(Colorir.RED+"\nExemplos: Desenvolvedor,Estagiario\n"+Colorir.GREEN+"Digite os nomes dos Empregos: "+Colorir.ENDC) or (print(Colorir.YELLOW+"\n Resultado de emprego vai ser aleatório\n"+Colorir.ENDC),time.sleep(3))).lower().replace(" ","-").split(",")
 			Salvar   = str(input(Colorir.GREEN+"\nDeseja Salvar? S/n "+Colorir.ENDC).lower())
 			
 			if Salvar == "s" or Salvar == "sim":
 				Salvar = str(input(Colorir.RED+"exemplos: "+Colorir.GREEN+"programador.txt ou estagiario.txt\nDeseja Salvar aonde? "+Colorir.ENDC) or "sineEmpregos.txt")
 				arq = open(Salvar,"w+")
-				arq.writelines(author) 
+				arq.writelines(Mensagem.author) 
 				arq.close()
 			
 			elif Salvar == "n" or Salvar == "nao" or Salvar == "não":
 				Salvar = " "
 
 			else:
-				print(Colorir.YELLOW+"\nTente novamente\n"+Colorir.ENDC)
+				print(Mensagem.Novamente)
 				mainInterativo()
 			
 			if not Cidades == "" and not Empregos == "":
@@ -192,19 +253,13 @@ def mainInterativo():
 				time.sleep(2)
 				break
 		except KeyboardInterrupt:
-			print(Colorir.YELLOW+"\nCancelado com Sucesso\n"+Colorir.ENDC)
+			print(Mensagem.Cancelado)
 			break
 		except IndexError:
-			print(Colorir.YELLOW+"\nEsqueceu colocar o Estado, exemplos:Bodoco/pe, juazeiro-do-norte/CE\nTente novamente "+Colorir.ENDC)
+			print(Mensagem.errorEstado)
 			time.sleep(3)
 		except NameError:
-			print(Colorir.YELLOW+'''
-____________________________________
-BeautifulSoup4 não instalado
-Faça a instalação do BeautifulSoup
-[+] pip install -r requisitos.txt
-
-'''+Colorir.ENDC)
+			print(Mensagem.errorBeautifulSoup)
 			time.sleep(3)
 			exit(1)
 #######################################################################
@@ -214,6 +269,7 @@ def main():
 	parser.add_argument("-e","--empregos",default=" ", help="Pode colocar mais de um emprego separado por vígula,  Exemplo: -s Estagiario,desenvolvedor")
 	parser.add_argument("-s","--salvar",  default=" ", help="Para salvar os resultados")
 	parser.add_argument("-i","--interativo", action="store_true",help="Entrar no Modo Interativo")
+	parser.add_argument("-l","--lista", action="store_true",help="Mostrar a lista das vagas de empregos disponivel")
 	args = parser.parse_args()
 	
 	
@@ -222,9 +278,13 @@ def main():
 		Empregos   = list(args.empregos.lower().split(","))
 		Salvar     = args.salvar.lower()
 		Interativo = args.interativo
+		Lista      = args.lista
 		
 		if Interativo:
 			mainInterativo()
+		
+		elif Lista:
+			busca_area()
 		else:
 			if not Salvar == " ":
 				arq = open(Salvar,"w+")
