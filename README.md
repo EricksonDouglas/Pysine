@@ -33,7 +33,7 @@ Passo 4:
 Pronto! Você já pode desfrutar da ferramenta
 
 ```
-./pysine
+./pysine -i
 ```
 
 # Instalação no Vagrant
@@ -63,7 +63,7 @@ vagrant ssh
 Pronto! Você já pode rodar a aplicação
 
 ```
-./pysine.py
+./pysine.py -i
 ```
 
 
@@ -78,6 +78,11 @@ usage: ./pysine [-h] [-c CIDADES] [-e EMPREGOS] [-s SALVAR] [-i]
 ```
 ./pysine -i
 ```
+[+] Mostrar a vagas de empregos pela Área e o Cargo
+
+```
+./pysine -l
+```
 
 [+] Mostrando o resultado do emprego Estagiario na Cidade Crato/PE
 
@@ -85,10 +90,10 @@ usage: ./pysine [-h] [-c CIDADES] [-e EMPREGOS] [-s SALVAR] [-i]
 python3 pysine -e Estagiario --cidades Crato/CE 
 ```
 
-[+] Mostrando os ultimos resultado da Cidade Crato/PE e das Cidades próximas
+[+] Mostrando os ultimos resultado da Cidade Recife/PE e/ou das Cidades próximas
 
 ```
-python3 pysine -c Crato/CE 
+python3 pysine -c recife/pe
 ```
 
 [+] Salvando o resultado dos empregos da cidade Juazeiro do norte no arquivo vendedor.txt
