@@ -66,12 +66,12 @@ class Mensagem:
 
 [+] Modo Interativo
 """+Colorir.BRED+"""./pysine -i
+"""+Colorir.GREEN+"""[+] Mostrar a vagas de empregos pela Área e o Cargo
+"""+Colorir.BRED+"""python3 pysine -l
 """+Colorir.GREEN+"""[+] Mostrando o resultado do emprego Estagiario na Cidade Crato/PE
 """+Colorir.BRED+"""python3 pysine -e Estagiario --cidades Crato/CE
-
-"""+Colorir.GREEN+"""[+] Mostrando os ultimos resultado da Cidade Crato/PE e das Cidades próximos 
-"""+Colorir.BRED+"""python3 pysine --cidades Crato/CE 
-
+"""+Colorir.GREEN+"""[+] Mostrando os ultimos resultado da Cidade Crato/PE e/ou das Cidades próximos 
+"""+Colorir.BRED+"""python3 pysine -c Crato/CE 
 """+Colorir.GREEN+"""[+] Salvando o resultado dos empregos da cidade Juazeiro do norte no arquivo vendedor.txt 
 """+Colorir.BRED+"""./pysine -c juazeiro-do-norte/ce --empregos Vendedor,vendedor-externo --salvar vendedor.txt
 
