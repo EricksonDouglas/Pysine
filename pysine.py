@@ -113,7 +113,7 @@ Faça a instalação do BeautifulSoup
 	
 	Cancelado   = Colorir.YELLOW+"\nCancelado com Sucesso\n"+Colorir.ENDC
 	
-	Novamente   = Colorir.YELLOW+"\nTente novamente\n"+Colorir.ENDC
+	Novamente   = Colorir.YELLOW+"\nNão Existe\nTente novamente\n"+Colorir.ENDC
 	EmpregoNot  = Colorir.WARNING+"""
 [-]
 [-] Emprego não encontrado:
@@ -176,44 +176,64 @@ def procurar(cidade,estado,emprego,salvar):
 
 #Menu Lista
 ###################################################################################
-def busca_emprego(Emprego):
+def busca_emprego(Emprego,salvar):
 	url  = "http://www.sine.com.br"+Emprego
 	soup = BeautifulSoup(urlopen(url),"html.parser")
 	links= soup.find("div",{"class":"row jobs"}).find_all("a")
 	if not len(links) == 0:
 		for row in links:
-			mostraremprego(row.attrs["href"],salvar=" ")		
+			mostraremprego(row.attrs["href"],salvar)		
 
 def busca_funcao(complemento_link):
 	url   = "http://www.sine.com.br"+complemento_link
 	soup  = BeautifulSoup(urlopen(url),"html.parser")
 	links = soup.find("div",{"id":"ctl00_cphConteudo_pnlFuncao"}).find_all("a")
 	lista_vagas = dict()
+	print("\n"*20)
+	
 	for link in links:
 		print(Colorir.GREEN+link.get_text()+" | Digite: "+Colorir.RED2+link.attrs["href"].split("/")[-1]+Colorir.ENDC)
 		lista_vagas[link.attrs["href"].split("/")[-1]] = link.attrs["href"]
 	
-	escolha =str(input(Colorir.RED2+"\nQual você deseja escolher? "+Colorir.GREEN)).lower()
-	if escolha in lista_vagas:
-		busca_emprego(lista_vagas[escolha])
+	escolha  = str(input(Colorir.RED2+"\nQual você deseja escolher? "+Colorir.GREEN)).lower()
+	Salvar   = str(input(Colorir.GREEN+"\nDeseja Salvar? S/n "+Colorir.ENDC).lower())
+			
+	if Salvar == "s" or Salvar == "sim":
+		if "Vagas" not in os.listdir():
+			os.mkdir("Vagas")
+		
+		Salvar = str(input(Colorir.RED+"exemplos: "+Colorir.GREEN+"programador.txt ou estagiario.txt\nDeseja Salvar aonde? "+Colorir.ENDC) or "sineEmpregos.txt")
+		arq = open("Vagas/"+Salvar,"w+")
+		arq.writelines(Mensagem.author) 
+		arq.close()
+	
 	else:
-		print("Tente Novamente")
+		Salvar = " "
+	
+	if escolha in lista_vagas:
+		busca_emprego(lista_vagas[escolha],Salvar)
+	else:
+		print(Mensagem.Novamente)
+		time.sleep(2)
+		busca_area()
 	
 def busca_area():
 	url ="http://www.sine.com.br/busca-de-vagas-area"
 	soup  = BeautifulSoup(urlopen(url),"html.parser")
 	links = soup.find("div",{"id":"ctl00_cphConteudo_pnlArea"}).find_all("a")
 	lista_area = dict()
-	 
+	print("\n"*20)
+	
 	for link in links:
 		print(Colorir.GREEN+link.get_text()+" | Digite: "+Colorir.RED2+link.attrs["href"].split("/")[-1]+Colorir.ENDC)
-		lista_area[link.attrs["href"].split("/")[-1]] = link.attrs["href"]
-		
+		lista_area[link.attrs["href"].split("/")[-1]] = link.attrs["href"]	
 	escolha =str(input(Colorir.RED2+"\nQual você deseja escolher? "+Colorir.GREEN)).lower()
 	if escolha in lista_area:
 		busca_funcao(lista_area[escolha])
 	else:
-		print("Tente Novamente")
+		print(Mensagem.Novamente)
+		time.sleep(2)
+		busca_area()
 
 
 #Menu interativo
